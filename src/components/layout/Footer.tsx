@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
@@ -8,9 +8,28 @@ import { CreateClipboardModal } from '@/components/layout/CreateClipboardModal';
 
 const Footer = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const createButtonRef = useRef<HTMLButtonElement>(null);
 
     const openCreateModal = () => setIsCreateModalOpen(true);
-    const closeCreateModal = () => setIsCreateModalOpen(false); 
+    const closeCreateModal = () => setIsCreateModalOpen(false);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.altKey && event.key === 'c') {
+                event.preventDefault(); // Prevent browser shortcuts
+                openCreateModal(); // Open the modal
+                //Or, use focus and click if direct model open is a problem:
+                // createButtonRef.current?.focus();
+                // createButtonRef.current?.click();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [openCreateModal]);
 
     return (
         <footer className="flex justify-center items-center w-full p-4">
@@ -25,8 +44,9 @@ const Footer = () => {
                     </NavigationMenuItem>
                     <NavigationMenuItem>
                         <Button
-                            variant="outline" 
+                            variant="outline"
                             onClick={openCreateModal}
+                            ref={createButtonRef}
                         >
                             Create
                         </Button>

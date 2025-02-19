@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -39,6 +39,14 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
         }
     };
 
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            handleSubmit();
+        }
+    };
+
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
@@ -54,6 +62,7 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
                             placeholder="Type or paste your text here..."
                             value={clipboardText}
                             onChange={handleTextChange}
+                            onKeyDown={handleKeyDown}
                             className="col-span-4"
                         />
                     </div>
