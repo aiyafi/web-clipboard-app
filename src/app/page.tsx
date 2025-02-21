@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
@@ -12,8 +12,8 @@ import { Copy, Trash } from 'lucide-react';
 interface ClipboardItem {
     id: string;
     createdAt: any;
-    text: string; // Original text for copying
-    hashedText: string; // Hashed version stored in Firebase
+    text: string;
+    hashedText: string;
     deviceName?: string;
 }
 
@@ -37,8 +37,8 @@ const Page = () => {
                     clipboardData.push({
                         id: doc.id,
                         createdAt: doc.data().createdAt,
-                        text: doc.data().text, // Original text
-                        hashedText: doc.data().hashedText, // Hashed text from Firebase
+                        text: doc.data().text,
+                        hashedText: doc.data().hashedText,
                         deviceName: doc.data().deviceName,
                     });
                 });
@@ -60,7 +60,6 @@ const Page = () => {
         setParticleColor(resolvedTheme === "dark" ? "#ffffff" : "#000000");
     }, [resolvedTheme]);
 
-    // Function to copy text to clipboard
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text).then(() => {
             alert("Copied to clipboard!");
@@ -69,7 +68,6 @@ const Page = () => {
         });
     };
 
-    // Function to delete an item from Firebase
     const handleDelete = async (id: string) => {
         try {
             const docRef = doc(db, 'clipboards', id);
@@ -79,7 +77,6 @@ const Page = () => {
         }
     };
 
-    // Helper function to format the timestamp
     const formatDate = (timestamp: any) => {
         try {
             if (!timestamp) return "Invalid Date";
@@ -110,9 +107,8 @@ const Page = () => {
                 color={particleColor}
                 refresh
             />
-            <div className="relative p-4">
+            <div className="relative container mx-auto p-4 pb-20 sm:p-6 lg:p-8">
                 <h1 className="z-10 relative text-2xl font-bold mb-4">Dashboard</h1>
-                <p className="z-10 relative">Lorem ipsum dolor sit amet</p>
 
                 {loading && <p>Loading clipboard data...</p>}
                 {error && <p>Error: {error.message}</p>}
@@ -123,47 +119,75 @@ const Page = () => {
                         {clipboardItems.length === 0 ? (
                             <p>No data found.</p>
                         ) : (
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            No.
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Created At
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Content
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                            <>
+                                {/* Table for larger screens */}
+                                <div className="hidden sm:block overflow-x-auto">
+                                    <table className="min-w-full divide-y divide-gray-200 border shadow-md">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    No.
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Created At
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Content
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Actions
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {clipboardItems.map((item, index) => (
+                                                <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="px-6 py-4 text-sm sm:text-base">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm sm:text-base">
+                                                        {formatDate(item.createdAt)}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm sm:text-base">
+                                                        {item.text}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <Button variant="outline" size="icon" onClick={() => handleCopy(item.text)}>
+                                                            <Copy className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button variant="destructive" size="icon" onClick={() => handleDelete(item.id)} className="ml-2">
+                                                            <Trash className="h-4 w-4" />
+                                                        </Button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* Cards for smaller screens */}
+                                <div className="block sm:hidden space-y-4">
                                     {clipboardItems.map((item, index) => (
-                                        <tr key={item.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {index + 1}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {formatDate(item.createdAt)}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {item.text}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <Button variant="outline" size="icon" onClick={() => handleCopy(item.text)}>
-                                                    <Copy className="h-4 w-4" />
-                                                </Button>
-                                                <Button variant="destructive" size="icon" onClick={() => handleDelete(item.id)} className="ml-2">
-                                                    <Trash className="h-4 w-4" />
-                                                </Button>
-                                            </td>
-                                        </tr>
+                                        <div key={item.id} className="p-4 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <span className="font-semibold text-sm">No. {index + 1}</span>
+                                                    <p className="text-xs text-gray-600 mt-1">{formatDate(item.createdAt)}</p>
+                                                </div>
+                                                <div className="flex space-x-2">
+                                                    <Button variant="outline" size="icon" onClick={() => handleCopy(item.text)}>
+                                                        <Copy className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button variant="destructive" size="icon" onClick={() => handleDelete(item.id)}>
+                                                        <Trash className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-gray-800">{item.text}</p>
+                                        </div>
                                     ))}
-                                </tbody>
-                            </table>
+                                </div>
+                            </>
                         )}
                     </div>
                 )}

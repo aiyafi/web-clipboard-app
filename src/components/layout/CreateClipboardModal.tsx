@@ -26,7 +26,6 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
         setClipboardText(event.target.value);
     };
 
-    // Function to generate SHA-256 hash of text
     const generateHash = (text: string) => {
         return sha256(text);
     };
@@ -78,29 +77,24 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
                         Enter the text.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Textarea
-                            placeholder="Type or paste your text here..."
-                            value={clipboardText}
-                            onChange={handleTextChange}
-                            onKeyDown={handleKeyDown}
-                            className="col-span-4"
-                        />
-                    </div>
+                <div className="py-4">
+                    <Textarea
+                        placeholder="Type or paste your text here..."
+                        value={clipboardText}
+                        onChange={handleTextChange}
+                        onKeyDown={handleKeyDown}
+                    />
                 </div>
-                <DialogFooter className="flex items-center">
-                    <div className="space-x-2">
-                        <Button type="button" onClick={handlePaste}>
-                            Paste
-                        </Button>
-                        <Button type="button" variant="secondary" onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button type="submit" onClick={handleSubmit}>
-                            Submit
-                        </Button>
-                    </div>
+                <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-2">
+                    <Button type="button" onClick={handlePaste}>
+                        Paste
+                    </Button>
+                    <Button type="button" variant="secondary" onClick={onClose}>
+                        Cancel
+                    </Button>
+                    <Button type="submit" onClick={handleSubmit}>
+                        Submit
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
