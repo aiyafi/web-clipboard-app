@@ -12,7 +12,8 @@ import { Copy, Trash } from 'lucide-react';
 interface ClipboardItem {
     id: string;
     createdAt: any;
-    text: string;
+    text: string; // Original text for copying
+    hashedText: string; // Hashed version stored in Firebase
     deviceName?: string;
 }
 
@@ -36,7 +37,8 @@ const Page = () => {
                     clipboardData.push({
                         id: doc.id,
                         createdAt: doc.data().createdAt,
-                        text: doc.data().text,
+                        text: doc.data().text, // Original text
+                        hashedText: doc.data().hashedText, // Hashed text from Firebase
                         deviceName: doc.data().deviceName,
                     });
                 });
@@ -125,7 +127,7 @@ const Page = () => {
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            ID
+                                            No.
                                         </th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Created At
@@ -139,10 +141,10 @@ const Page = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {clipboardItems.map((item) => (
+                                    {clipboardItems.map((item, index) => (
                                         <tr key={item.id}>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {item.id}
+                                                {index + 1}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {formatDate(item.createdAt)}

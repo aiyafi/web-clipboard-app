@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { sha256 } from 'js-sha256';
 import {
     Dialog,
     DialogContent,
@@ -6,12 +7,11 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { db } from '@/lib/firebaseConfig'; // Import Firebase Firestore database
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore functions
+import { db } from '@/lib/firebaseConfig';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface CreateClipboardModalProps {
     open: boolean;
@@ -26,25 +26,30 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
         setClipboardText(event.target.value);
     };
 
-    const handleSubmit = async () => { // Make handleSubmit async
+    // Function to generate SHA-256 hash of text
+    const generateHash = (text: string) => {
+        return sha256(text);
+    };
+
+    const handleSubmit = async () => {
         if (!clipboardText.trim()) {
-            console.warn("Clipboard text is empty. Not saving."); // Optional: Log a warning instead of toast
-            return; // Prevent saving empty clipboard - removed toast notification
+            console.warn("Clipboard text is empty. Not saving.");
+            return;
         }
 
         try {
             const clipboardsCollectionRef = collection(db, 'clipboards');
             await addDoc(clipboardsCollectionRef, {
-                text: clipboardText, // Save text to Firestore 'text' field
-                createdAt: serverTimestamp(), // Firestore server timestamp
-                deviceName: navigator.userAgent, // Optional deviceName
+                text: clipboardText,
+                hashedText: generateHash(clipboardText),
+                createdAt: serverTimestamp(),
+                deviceName: navigator.userAgent,
             });
-            console.log("Clipboard saved successfully."); // Optional: Log success instead of toast
-            setClipboardText(''); // Clear textarea after successful save
-            onClose(); // Close the dialog after successful save
+            console.log("Clipboard saved successfully.");
+            setClipboardText('');
+            onClose();
         } catch (error: any) {
-            console.error("Error adding clipboard to Firestore: ", error); // Keep console error logging
-            // Removed toast error notification - no toast anymore
+            console.error("Error adding clipboard to Firestore: ", error);
         }
     };
 
@@ -53,7 +58,7 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
             const text = await navigator.clipboard.readText();
             setClipboardText(text);
         } catch (err) {
-            console.error("Failed to read clipboard contents:", err); // Keep console error logging
+            console.error("Failed to read clipboard contents:", err);
         }
     };
 
