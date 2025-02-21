@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { db } from '@/lib/firebaseConfig'; // Import Firebase Firestore database
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore functions
 
 interface CreateClipboardModalProps {
     open: boolean;
@@ -24,10 +26,26 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
         setClipboardText(event.target.value);
     };
 
-    const handleSubmit = () => {
-        // TODO: DB
-        console.log("Text to save:", clipboardText);
-        onClose();
+    const handleSubmit = async () => { // Make handleSubmit async
+        if (!clipboardText.trim()) {
+            console.warn("Clipboard text is empty. Not saving."); // Optional: Log a warning instead of toast
+            return; // Prevent saving empty clipboard - removed toast notification
+        }
+
+        try {
+            const clipboardsCollectionRef = collection(db, 'clipboards');
+            await addDoc(clipboardsCollectionRef, {
+                text: clipboardText, // Save text to Firestore 'text' field
+                createdAt: serverTimestamp(), // Firestore server timestamp
+                deviceName: navigator.userAgent, // Optional deviceName
+            });
+            console.log("Clipboard saved successfully."); // Optional: Log success instead of toast
+            setClipboardText(''); // Clear textarea after successful save
+            onClose(); // Close the dialog after successful save
+        } catch (error: any) {
+            console.error("Error adding clipboard to Firestore: ", error); // Keep console error logging
+            // Removed toast error notification - no toast anymore
+        }
     };
 
     const handlePaste = async () => {
@@ -35,7 +53,7 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
             const text = await navigator.clipboard.readText();
             setClipboardText(text);
         } catch (err) {
-            console.error("Failed to read clipboard contents:", err);
+            console.error("Failed to read clipboard contents:", err); // Keep console error logging
         }
     };
 
@@ -46,14 +64,13 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
         }
     };
 
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Create New Clip</DialogTitle>
                     <DialogDescription>
-                        Enter the text you want to save to the web clipboard.
+                        Enter the text.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">

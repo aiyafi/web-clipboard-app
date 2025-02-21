@@ -1,10 +1,20 @@
+/* src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Reset margin and padding for consistent layout */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none; /* Prevent browser overscroll bounce */
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
 
 @layer base {
   :root {

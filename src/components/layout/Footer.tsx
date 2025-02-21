@@ -32,7 +32,7 @@ const Footer = () => {
     }, [openCreateModal]);
 
     return (
-        <footer className="flex justify-center items-center w-full p-4">
+        <footer className="fixed bottom-0 left-0 flex justify-center items-center w-full p-4 bg-white border-t z-50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <NavigationMenu className="flex justify-center w-full">
                 <NavigationMenuList className="flex space-x-4 justify-center">
                     <NavigationMenuItem>

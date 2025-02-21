@@ -5,8 +5,8 @@ import { Footer } from '@/components/layout/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Web Clipboard',
-  description: 'Universal web clipboard',
+  title: 'use ask',
+  description: 'MKA',
 }
 
 export default function RootLayout({

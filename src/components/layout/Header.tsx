@@ -15,7 +15,7 @@ export function Header() {
             <div className="container flex h-14 max-w-screen-2xl items-center justify-center">
                 <div className="mr-4 flex items-center space-x-6">
                     <Link href="/" className="flex items-center space-x-2">
-                        <span className="font-bold">WebClipboard</span>
+                        <span className="font-bold">use ask</span>
                     </Link>
                 </div>
             </div>
