@@ -4,14 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { useTheme } from "next-themes";
 import { Particles } from "@/components/magicui/particles";
-import { db } from '@/lib/firebaseConfig'; // Import Firebase Firestore database
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'; // Import Firestore functions
+import { db } from '@/lib/firebaseConfig';
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
+import { Button } from "@/components/ui/button";
+import { Copy, Trash } from 'lucide-react';
 
-interface ClipboardItem { // You can adjust this interface if needed to match Firestore data
-    id: string; // Firestore document ID is a string
-    createdAt: any; // Firestore Timestamp, keep as 'any' or refine type if needed
-    text: string; // Changed 'content' to 'text' to match Firestore field name
-    deviceName?: string; // Optional deviceName
+interface ClipboardItem {
+    id: string;
+    createdAt: any;
+    text: string;
+    deviceName?: string;
 }
 
 const Page = () => {
@@ -22,7 +24,7 @@ const Page = () => {
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        const fetchData = () => { // Remove async, onSnapshot handles real-time updates
+        const fetchData = () => {
             setLoading(true);
             setError(null);
             const clipboardsCollectionRef = collection(db, 'clipboards');
@@ -33,9 +35,9 @@ const Page = () => {
                 snapshot.forEach((doc) => {
                     clipboardData.push({
                         id: doc.id,
-                        createdAt: doc.data().createdAt, // Access createdAt from doc.data()
-                        text: doc.data().text,         // Access text (content) from doc.data() - assuming you stored as 'text' in Firestore
-                        deviceName: doc.data().deviceName, // Access deviceName if available
+                        createdAt: doc.data().createdAt,
+                        text: doc.data().text,
+                        deviceName: doc.data().deviceName,
                     });
                 });
                 setClipboardItems(clipboardData);
@@ -46,7 +48,7 @@ const Page = () => {
                 setLoading(false);
             });
 
-            return () => unsubscribe(); // Unsubscribe on unmount
+            return () => unsubscribe();
         };
 
         fetchData();
@@ -56,12 +58,30 @@ const Page = () => {
         setParticleColor(resolvedTheme === "dark" ? "#ffffff" : "#000000");
     }, [resolvedTheme]);
 
+    // Function to copy text to clipboard
+    const handleCopy = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Copied to clipboard!");
+        }).catch((error) => {
+            console.error("Failed to copy:", error);
+        });
+    };
 
-    // Helper function to format the timestamp (adjust for Firestore Timestamp if needed)
-    const formatDate = (timestamp: any) => { // Expecting Firestore Timestamp or similar
+    // Function to delete an item from Firebase
+    const handleDelete = async (id: string) => {
         try {
-            if (!timestamp) return "Invalid Date"; // Handle null or undefined timestamp
-            const date = timestamp.toDate(); // Convert Firestore Timestamp to JavaScript Date
+            const docRef = doc(db, 'clipboards', id);
+            await deleteDoc(docRef);
+        } catch (error) {
+            console.error("Error deleting document:", error);
+        }
+    };
+
+    // Helper function to format the timestamp
+    const formatDate = (timestamp: any) => {
+        try {
+            if (!timestamp) return "Invalid Date";
+            const date = timestamp.toDate();
             const options: Intl.DateTimeFormatOptions = {
                 year: 'numeric',
                 month: 'long',
@@ -77,7 +97,6 @@ const Page = () => {
             return "Invalid Date";
         }
     };
-
 
     return (
         <div className="relative min-h-screen">
@@ -114,6 +133,9 @@ const Page = () => {
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Content
                                         </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -127,6 +149,14 @@ const Page = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {item.text}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <Button variant="outline" size="icon" onClick={() => handleCopy(item.text)}>
+                                                    <Copy className="h-4 w-4" />
+                                                </Button>
+                                                <Button variant="destructive" size="icon" onClick={() => handleDelete(item.id)} className="ml-2">
+                                                    <Trash className="h-4 w-4" />
+                                                </Button>
                                             </td>
                                         </tr>
                                     ))}
