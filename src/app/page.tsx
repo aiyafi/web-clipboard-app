@@ -5,13 +5,13 @@ import { Header } from '@/components/layout/Header';
 import { useTheme } from "next-themes";
 import { Particles } from "@/components/magicui/particles";
 import { db } from '@/lib/firebaseConfig';
-import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { Button } from "@/components/ui/button";
 import { Copy, Trash } from 'lucide-react';
 
 interface ClipboardItem {
     id: string;
-    createdAt: any;
+    createdAt: Timestamp; // Changed from any
     text: string;
     hashedText: string;
     deviceName?: string;
@@ -77,7 +77,7 @@ const Page = () => {
         }
     };
 
-    const formatDate = (timestamp: any) => {
+    const formatDate = (timestamp: Timestamp) => { // Changed from any
         try {
             if (!timestamp) return "Invalid Date";
             const date = timestamp.toDate();
