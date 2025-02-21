@@ -35,7 +35,7 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
             console.warn("Clipboard text is empty. Not saving.");
             return;
         }
-
+    
         try {
             const clipboardsCollectionRef = collection(db, 'clipboards');
             await addDoc(clipboardsCollectionRef, {
@@ -47,8 +47,9 @@ const CreateClipboardModal: React.FC<CreateClipboardModalProps> = ({ open, onOpe
             console.log("Clipboard saved successfully.");
             setClipboardText('');
             onClose();
-        } catch (error: any) {
-            console.error("Error adding clipboard to Firestore: ", error);
+        } catch (error) {
+            console.error("Error adding clipboard to Firestore: ", 
+                error instanceof Error ? error.message : 'Unknown error');
         }
     };
 

@@ -11,7 +11,7 @@ import { Copy, Trash } from 'lucide-react';
 
 interface ClipboardItem {
     id: string;
-    createdAt: Timestamp; // Changed from any
+    createdAt: Timestamp;
     text: string;
     hashedText: string;
     deviceName?: string;
@@ -77,7 +77,7 @@ const Page = () => {
         }
     };
 
-    const formatDate = (timestamp: Timestamp) => { // Changed from any
+    const formatDate = (timestamp: Timestamp) => {
         try {
             if (!timestamp) return "Invalid Date";
             const date = timestamp.toDate();

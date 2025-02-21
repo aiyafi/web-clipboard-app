@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
@@ -10,26 +10,21 @@ const Footer = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const createButtonRef = useRef<HTMLButtonElement>(null);
 
-    const openCreateModal = () => setIsCreateModalOpen(true);
-    const closeCreateModal = () => setIsCreateModalOpen(false);
+    // Wrap functions in useCallback
+    const openCreateModal = useCallback(() => setIsCreateModalOpen(true), []);
+    const closeCreateModal = useCallback(() => setIsCreateModalOpen(false), []);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.altKey && event.key === 'c') {
-                event.preventDefault(); // Prevent browser shortcuts
-                openCreateModal(); // Open the modal
-                //Or, use focus and click if direct model open is a problem:
-                // createButtonRef.current?.focus();
-                // createButtonRef.current?.click();
+                event.preventDefault();
+                openCreateModal();
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [openCreateModal]);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [openCreateModal]); // Now stable dependency
 
     return (
         <footer className="fixed bottom-0 left-0 flex justify-center items-center w-full p-4 bg-white border-t z-50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
