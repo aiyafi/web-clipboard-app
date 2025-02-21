@@ -83,4 +83,4 @@ This is a personal use application. Service access is restricted to the owner. N
 - Vercel Next.js Team
 
 ## License 📄
-MIT License - See [LICENSE](LICENSE) for details.
+MIT License
