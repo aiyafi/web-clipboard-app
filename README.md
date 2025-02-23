@@ -5,12 +5,21 @@
 A personal web clipboard solution for bridging the gap between iPhone and Windows ecosystems. Securely sync text snippets across devices with a self-hosted solution.
 
 ## Features 🚀
-- **Personal Clipboard Management** (Create/Read/Update/Delete)
+- **Personal Clipboard Management**
+  - Save text snippets
+  - Copy to clipboard
+  - Delete snippets
 - Cross-device synchronization
 - Responsive UI with smooth animations
 - Secure authentication (personal use only)
-- Theme support (light/dark mode)
 - Real-time updates
+
+## Future Plans 📅
+- Theme support (light/dark mode) 
+- Create clickable hyperlinks in clipboard items
+- Better UI
+- Improved accessibility
+- PWA support
 
 ## Installation ⚙️
 
