@@ -11,10 +11,13 @@ A personal web clipboard solution for bridging the gap between iPhone and Window
   - Delete snippets
 - Cross-device synchronization
 - Responsive UI with smooth animations
-- Secure authentication (personal use only)
 - Real-time updates
 
 ## Future Plans 📅
+- Update clipboard items in real-time
+- Select multiple items for bulk actions
+- Search clipboard items
+- Delete all clipboard items
 - Theme support (light/dark mode) 
 - Create clickable hyperlinks in clipboard items
 - Better UI
