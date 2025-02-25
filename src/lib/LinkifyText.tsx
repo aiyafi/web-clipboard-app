@@ -2,18 +2,18 @@
 import React from 'react';
 
 export function linkifyText(text: string) {
-    // Regex to match URLs (http or https)
-    const urlRegex = /(\bhttps?:\/\/[^\s]+)/gi;
-    // Split the text by URLs
+    // Match URLs starting with http://, https://, or www.
+    const urlRegex = /(\b(?:https?:\/\/|www\.)[^\s]+)/gi;
     const parts = text.split(urlRegex);
 
     return parts.map((part, index) => {
-        // If the part matches the URL regex, render as a link
-        if (urlRegex.test(part)) {
+        if (/^(https?:\/\/|www\.)/.test(part)) {
+            // If the URL doesn't start with http, add it
+            const href = part.startsWith("http") ? part : `https://${part}`;
             return (
                 <a
                     key={index}
-                    href={part}
+                    href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 underline"
