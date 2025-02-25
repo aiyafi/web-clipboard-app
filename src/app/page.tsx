@@ -8,6 +8,7 @@ import { db } from '@/lib/firebaseConfig';
 import { collection, onSnapshot, query, orderBy, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { Button } from "@/components/ui/button";
 import { Copy, Trash } from 'lucide-react';
+import { linkifyText } from '@/lib/LinkifyText';
 
 interface ClipboardItem {
     id: string;
@@ -149,8 +150,9 @@ const Page = () => {
                                                         {formatDate(item.createdAt)}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm sm:text-base">
-                                                        {item.text}
+                                                        {linkifyText(item.text)}
                                                     </td>
+
                                                     <td className="px-6 py-4">
                                                         <Button variant="outline" size="icon" onClick={() => handleCopy(item.text)}>
                                                             <Copy className="h-4 w-4" />
@@ -183,7 +185,7 @@ const Page = () => {
                                                     </Button>
                                                 </div>
                                             </div>
-                                            <p className="text-sm text-gray-800">{item.text}</p>
+                                            <p className="text-sm text-gray-800">{linkifyText(item.text)}</p>
                                         </div>
                                     ))}
                                 </div>
