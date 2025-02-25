@@ -48,8 +48,8 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
     const renderChildren = () => {
       return React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type === DockIcon) {
-          return React.cloneElement(child, {
-            ...child.props,
+          const dockIconChild = child as React.ReactElement<DockIconProps>;
+          return React.cloneElement(dockIconChild, {
             mouseX: mouseX,
             size: iconSize,
             magnification: iconMagnification,
@@ -59,6 +59,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
         return child;
       });
     };
+
 
     return (
       <motion.div
